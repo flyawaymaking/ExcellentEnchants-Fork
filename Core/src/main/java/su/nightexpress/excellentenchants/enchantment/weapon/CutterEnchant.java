@@ -16,6 +16,7 @@ import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.api.Modifier;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
+import su.nightexpress.excellentenchants.api.enchantment.meta.Period;
 import su.nightexpress.excellentenchants.api.enchantment.meta.Probability;
 import su.nightexpress.excellentenchants.api.enchantment.type.AttackEnchant;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
@@ -36,7 +37,8 @@ public class CutterEnchant extends GameEnchantment implements AttackEnchant {
 
     public CutterEnchant(@NotNull EnchantsPlugin plugin, @NotNull File file, @NotNull EnchantData data) {
         super(plugin, file, data);
-        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(2, 1));
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(0, 0.4));
+        this.addComponent(EnchantComponent.PERIODIC, Period.ofSeconds(6));
     }
 
     @Override

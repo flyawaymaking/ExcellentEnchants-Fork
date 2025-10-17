@@ -18,6 +18,7 @@ import su.nightexpress.excellentenchants.api.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.api.Modifier;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
 import su.nightexpress.excellentenchants.api.enchantment.meta.ArrowEffects;
+import su.nightexpress.excellentenchants.api.enchantment.meta.Period;
 import su.nightexpress.excellentenchants.api.enchantment.meta.Probability;
 import su.nightexpress.excellentenchants.api.enchantment.type.ArrowEnchant;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
@@ -35,7 +36,8 @@ public class VampiricArrowsEnchant extends GameEnchantment implements ArrowEncha
     public VampiricArrowsEnchant(@NotNull EnchantsPlugin plugin, @NotNull File file, @NotNull EnchantData data) {
         super(plugin, file, data);
         this.addComponent(EnchantComponent.ARROW, new ArrowEffects(UniParticle.redstone(Color.RED, 1F)));
-        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(20, 5));
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(2, 5));
+        this.addComponent(EnchantComponent.PERIODIC, Period.ofSeconds(6));
     }
 
     @Override

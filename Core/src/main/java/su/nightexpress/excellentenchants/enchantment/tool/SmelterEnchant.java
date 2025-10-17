@@ -45,7 +45,7 @@ public class SmelterEnchant extends GameEnchantment implements BlockDropEnchant 
 
     public SmelterEnchant(@NotNull EnchantsPlugin plugin, @NotNull File file, @NotNull EnchantData data) {
         super(plugin, file, data);
-        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(15, 5));
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(1, 33));
 
         this.exemptedItems = new HashSet<>();
         this.recipes = new HashSet<>();

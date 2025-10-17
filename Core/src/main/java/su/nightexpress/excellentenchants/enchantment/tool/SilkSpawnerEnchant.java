@@ -40,7 +40,7 @@ public class SilkSpawnerEnchant extends GameEnchantment implements MiningEnchant
 
     public SilkSpawnerEnchant(@NotNull EnchantsPlugin plugin, @NotNull File file, @NotNull EnchantData data) {
         super(plugin, file, data);
-        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(0, 25));
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(0, 0.5));
     }
 
     @Override

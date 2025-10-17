@@ -6,6 +6,8 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantData;
+import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
+import su.nightexpress.excellentenchants.api.enchantment.meta.Probability;
 import su.nightexpress.excellentenchants.api.enchantment.type.InventoryEnchant;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
 import su.nightexpress.nightcore.config.FileConfig;
@@ -17,6 +19,7 @@ public class SoulboundEnchant extends GameEnchantment implements InventoryEnchan
 
     public SoulboundEnchant(@NotNull EnchantsPlugin plugin, @NotNull File file, @NotNull EnchantData data) {
         super(plugin, file, data);
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(0, 30));
     }
 
     @Override

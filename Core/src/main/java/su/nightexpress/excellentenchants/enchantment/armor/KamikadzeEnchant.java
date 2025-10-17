@@ -29,7 +29,7 @@ public class KamikadzeEnchant extends GameEnchantment implements DeathEnchant, R
 
     public KamikadzeEnchant(@NotNull EnchantsPlugin plugin, @NotNull File file, @NotNull EnchantData data) {
         super(plugin, file, data);
-        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(0, 3));
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(10, 11));
     }
 
     @Override

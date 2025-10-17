@@ -35,7 +35,7 @@ public class TemperEnchant extends GameEnchantment implements AttackEnchant {
         );
 
         this.damageStep = Modifier.load(config, "Settings.Damage.Step",
-            Modifier.addictive(0.5),
+            Modifier.addictive(1),
             "Damage will be increased for every X entity's health points missing. Where X is this value.",
             "By default increases damage by 5% for every 0.5 HP missing."
         );

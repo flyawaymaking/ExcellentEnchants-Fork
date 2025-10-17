@@ -12,6 +12,8 @@ import su.nightexpress.excellentenchants.api.damage.DamageBonusType;
 import su.nightexpress.excellentenchants.api.damage.DamageBonus;
 import su.nightexpress.excellentenchants.api.enchantment.type.ProtectionEnchant;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
+import su.nightexpress.excellentenchants.api.enchantment.meta.Period;
+import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
 import su.nightexpress.nightcore.config.ConfigValue;
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.util.Lists;
@@ -35,12 +37,13 @@ public class ElementalProtectionEnchant extends GameEnchantment implements Prote
 
     public ElementalProtectionEnchant(@NotNull EnchantsPlugin plugin, @NotNull File file, @NotNull EnchantData data) {
         super(plugin, file, data);
+        this.addComponent(EnchantComponent.PERIODIC, Period.ofSeconds(3));
     }
 
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.amount = Modifier.load(config, "Protection.Amount",
-            Modifier.addictive(0).perLevel(5).capacity(25),
+            Modifier.addictive(5).perLevel(3).capacity(25),
             "Protection amount given by enchantment."
         );
 

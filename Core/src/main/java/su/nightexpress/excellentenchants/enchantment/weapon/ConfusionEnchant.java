@@ -12,6 +12,7 @@ import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.Modifier;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
 import su.nightexpress.excellentenchants.api.enchantment.meta.PotionEffects;
+import su.nightexpress.excellentenchants.api.enchantment.meta.Period;
 import su.nightexpress.excellentenchants.api.enchantment.meta.Probability;
 import su.nightexpress.excellentenchants.api.enchantment.type.AttackEnchant;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
@@ -29,6 +30,7 @@ public class ConfusionEnchant extends GameEnchantment implements AttackEnchant {
             Modifier.addictive(10).perLevel(5).capacity(30),
             Modifier.addictive(1).capacity(1)
         ));
+        this.addComponent(EnchantComponent.PERIODIC, Period.ofSeconds(3));
     }
 
     @Override

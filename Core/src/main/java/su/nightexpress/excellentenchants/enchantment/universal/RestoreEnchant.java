@@ -1,5 +1,6 @@
 package su.nightexpress.excellentenchants.enchantment.universal;
 
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerItemDamageEvent;
@@ -12,12 +13,14 @@ import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.api.Modifier;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
+import su.nightexpress.excellentenchants.api.enchantment.meta.Period;
 import su.nightexpress.excellentenchants.api.enchantment.meta.Probability;
 import su.nightexpress.excellentenchants.api.enchantment.type.DurabilityEnchant;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.util.NumberUtil;
 import su.nightexpress.nightcore.util.bukkit.NightSound;
+import su.nightexpress.nightcore.util.wrapper.UniParticle;
 
 import java.io.File;
 
@@ -27,16 +30,12 @@ public class RestoreEnchant extends GameEnchantment implements DurabilityEnchant
 
     public RestoreEnchant(@NotNull EnchantsPlugin plugin, @NotNull File file, @NotNull EnchantData data) {
         super(plugin, file, data);
-        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(20, 5));
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(0, 6));
+        this.addComponent(EnchantComponent.PERIODIC, Period.ofSeconds(15));
     }
 
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
-        this.amount = Modifier.load(config, "Restore.Amount",
-            Modifier.addictive(15).perLevel(5).capacity(100),
-            "Amount of durability (in percent of item max) to be restored.");
-
-        this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.getAmount(level)));
     }
 
     public double getAmount(int level) {
@@ -54,21 +53,28 @@ public class RestoreEnchant extends GameEnchantment implements DurabilityEnchant
         if (!(itemStack.getItemMeta() instanceof Damageable damageable)) return false;
 
         int damage = event.getDamage();
+        int currentDamage = damageable.getDamage();
         int maxDurability = itemStack.getType().getMaxDurability();
-        if (damageable.getDamage() + damage < maxDurability) return false;
 
         event.setCancelled(true);
 
-        double damagePercent = 100D - this.getAmount(level);
-        int restoredDamage = (int) (maxDurability * (damagePercent / 100D));
+        int damageToRestore = damage;
 
-        damageable.setDamage(restoredDamage);
-        damageable.removeEnchant(this.getBukkitEnchantment());
+        int newDamage = Math.max(0, currentDamage - damageToRestore);
+
+        damageable.setDamage(newDamage);
+
+        if (currentDamage + damage < maxDurability) {
+            damageable.removeEnchant(this.getBukkitEnchantment());
+            if (this.hasVisualEffects()) {
+                NightSound.of(Sound.ITEM_TOTEM_USE).play(event.getPlayer());
+                UniParticle.of(Particle.HEART)
+                    .play(player.getEyeLocation(), 0.5, 0.5, 10);
+            }
+        }
+
         itemStack.setItemMeta(damageable);
 
-        if (this.hasVisualEffects()) {
-            NightSound.of(Sound.ITEM_TOTEM_USE).play(event.getPlayer());
-        }
         return true;
     }
 }

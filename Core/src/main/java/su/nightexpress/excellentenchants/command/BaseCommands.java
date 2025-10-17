@@ -6,14 +6,20 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BlockStateMeta;
+import org.bukkit.block.ShulkerBox;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable; // Добавьте этот импорт
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantRegistry;
+import su.nightexpress.excellentenchants.api.EnchantData;
 import su.nightexpress.excellentenchants.api.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.api.enchantment.CustomEnchantment;
+import su.nightexpress.excellentenchants.api.wrapper.EnchantDefinition;
 import su.nightexpress.excellentenchants.config.Config;
 import su.nightexpress.excellentenchants.config.Lang;
 import su.nightexpress.excellentenchants.config.Perms;
+import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
 import su.nightexpress.excellentenchants.util.EnchantUtils;
 import su.nightexpress.nightcore.command.experimental.CommandContext;
 import su.nightexpress.nightcore.command.experimental.argument.ArgumentTypes;
@@ -24,6 +30,9 @@ import su.nightexpress.nightcore.command.experimental.node.DirectNode;
 import su.nightexpress.nightcore.util.*;
 import su.nightexpress.nightcore.util.bridge.RegistryType;
 import su.nightexpress.nightcore.util.random.Rnd;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class BaseCommands {
 
@@ -92,6 +101,27 @@ public class BaseCommands {
                 .executes((context, arguments) -> giveFuel(plugin, context, arguments))
             );
         }
+
+        rootNode.addChildren(DirectNode.builder(plugin, "randomenchant")
+            .description("Получить случайную книгу зачарования по weight")
+            .permission(Perms.COMMAND_BOOK) // Используем существующее разрешение или создаем новое
+            .withArgument(ArgumentTypes.integerAbs("weight").required())
+            .withArgument(ArgumentTypes.player(CommandArguments.PLAYER))
+            .executes((context, arguments) -> giveRandomEnchantByWeight(plugin, context, arguments))
+        );
+
+        rootNode.addChildren(DirectNode.builder(plugin, "allenchants")
+            .description("Получить все книги зачарований по weight")
+            .permission(Perms.COMMAND_BOOK)
+            .withArgument(ArgumentTypes.integerAbs("weight").required())
+            .executes((context, arguments) -> giveAllEnchantsByWeight(plugin, context, arguments))
+        );
+
+        rootNode.addChildren(DirectNode.builder(plugin, "weightlist")
+            .description("Показать список доступных weight")
+            .permission(Perms.COMMAND_LIST)
+            .executes((context, arguments) -> showWeightList(plugin, context, arguments))
+        );
     }
 
     private static int getLevel(@NotNull Enchantment enchantment, @NotNull ParsedArguments arguments) {
@@ -239,5 +269,221 @@ public class BaseCommands {
             Lang.COMMAND_LIST_DONE_OTHERS.getMessage().send(context.getSender(), replacer -> replacer.replace(EnchantsPlaceholders.forPlayer(player)));
         }
         return true;
+    }
+
+    public static String getWeightName(int weight) {
+        switch (weight) {
+            case 1:
+                return "§6§lЛегендарный чар";
+            case 2:
+                return "§d§lЭпический чар";
+            case 5:
+                return "§b§lЭлитный чар";
+            case 10:
+                return "§a§lУникальный чар";
+            default:
+                return "Weight: " + weight;
+        }
+    }
+
+    public static boolean giveRandomEnchantByWeight(@NotNull EnchantsPlugin plugin, @NotNull CommandContext context, @NotNull ParsedArguments arguments) {
+        Player player = CommandUtil.getPlayerOrSender(context, arguments, CommandArguments.PLAYER);
+        if (player == null) return false;
+
+        int targetWeight = arguments.getIntArgument("weight", -1);
+
+        if (targetWeight <= 0) {
+            context.getSender().sendMessage("§cWeight должен быть положительным числом!");
+            return false;
+        }
+
+        // Получаем все CustomEnchantment и фильтруем по weight из definition
+        List<CustomEnchantment> enchantments = EnchantRegistry.getRegistered().stream()
+            .filter(enchant -> enchant.getDefinition().getWeight() == targetWeight)
+            .collect(Collectors.toList());
+
+        if (enchantments.isEmpty()) {
+            context.getSender().sendMessage("§cНе найдено зачарований с weight: " + targetWeight);
+            showAvailableWeights(context.getSender());
+            return false;
+        }
+
+        // Выбираем случайное зачарование
+        CustomEnchantment enchant = Rnd.get(enchantments);
+        int maxLevel = enchant.getDefinition().getMaxLevel();
+        int randomLevel = Rnd.get(1, maxLevel);
+
+        // Создаем и выдаем книгу
+        ItemStack enchantedBook = new ItemStack(Material.ENCHANTED_BOOK);
+        EnchantUtils.add(enchantedBook, enchant.getBukkitEnchantment(), randomLevel, true);
+        Players.addItem(player, enchantedBook);
+
+        // Красивое сообщение как в других командах плагина
+        if (context.getSender() == player) {
+            // Сообщение для себя
+            Lang.ENCHANTED_BOOK_GAVE.getMessage().send(context.getSender(), replacer -> replacer
+                .replace(EnchantsPlaceholders.GENERIC_ENCHANT, enchant.getDisplayName())
+                .replace(EnchantsPlaceholders.GENERIC_LEVEL, NumberUtil.toRoman(randomLevel))
+                .replace(EnchantsPlaceholders.forPlayer(player))
+                .replace("%weight%", String.valueOf(targetWeight))
+            );
+        } else {
+            // Сообщение когда выдаем другому игроку
+            context.getSender().sendMessage("§aВы выдали книгу с зачарованием §e" +
+                enchant.getDisplayName() + " " + NumberUtil.toRoman(randomLevel) +
+                "§a игроку §e" + player.getName() + "§a (weight: " + targetWeight + ")");
+
+            // Сообщение для получателя
+            player.sendMessage("§aВы получили книгу с зачарованием §e" +
+                enchant.getDisplayName() + " " + NumberUtil.toRoman(randomLevel) +
+                "§a (" + getWeightName(targetWeight) + "§a)");
+        }
+
+        return true;
+    }
+
+    public static boolean giveAllEnchantsByWeight(@NotNull EnchantsPlugin plugin, @NotNull CommandContext context, @NotNull ParsedArguments arguments) {
+        Player player = CommandUtil.getPlayerOrSender(context, arguments, CommandArguments.PLAYER);
+        if (player == null) return false;
+
+        int targetWeight = arguments.getIntArgument("weight", -1);
+
+        if (targetWeight <= 0) {
+            context.getSender().sendMessage("§cWeight должен быть положительным числом!");
+            return false;
+        }
+
+        // Получаем все CustomEnchantment и фильтруем по weight из definition
+        List<CustomEnchantment> enchantments = EnchantRegistry.getRegistered().stream()
+            .filter(enchant -> enchant.getDefinition().getWeight() == targetWeight)
+            .collect(Collectors.toList());
+
+        if (enchantments.isEmpty()) {
+            context.getSender().sendMessage("§cНе найдено зачарований с weight: " + targetWeight);
+            showAvailableWeights(context.getSender());
+            return false;
+        }
+
+        int givenCount = 0;
+
+        // Создаем книги для каждого зачарования
+        for (CustomEnchantment enchant : enchantments) {
+            int maxLevel = enchant.getDefinition().getMaxLevel();
+
+            if (maxLevel == 1) {
+                // Для зачарований с одним уровнем - просто книга
+                ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
+                EnchantUtils.add(book, enchant.getBukkitEnchantment(), 1, true);
+                Players.addItem(player, book);
+                givenCount++;
+            } else {
+                // Для зачарований с несколькими уровнями - создаем шалкербокс
+                ItemStack shulkerBox = createShulkerBoxWithLevels((GameEnchantment) enchant, maxLevel);
+                Players.addItem(player, shulkerBox);
+                givenCount++;
+            }
+        }
+
+        context.getSender().sendMessage("§aВыдано " + givenCount + " предметов с зачарованиями weight: " + targetWeight);
+        return true;
+    }
+
+    public static boolean showWeightList(@NotNull EnchantsPlugin plugin, @NotNull CommandContext context, @NotNull ParsedArguments arguments) {
+        Player player = CommandUtil.getPlayerOrSender(context, arguments, CommandArguments.PLAYER);
+        if (player == null) return false;
+
+        // Получаем все зарегистрированные зачарования
+        Set<CustomEnchantment> registered = EnchantRegistry.getRegistered();
+
+        if (registered.isEmpty()) {
+            context.getSender().sendMessage("§cЗачарования не загружены!");
+            return false;
+        }
+
+        // Группируем зачарования по weight из definition
+        Map<Integer, List<CustomEnchantment>> weightMap = registered.stream()
+            .collect(Collectors.groupingBy(enchant -> enchant.getDefinition().getWeight()));
+
+        context.getSender().sendMessage("§6=== Доступные weight зачарований ===");
+
+        if (weightMap.isEmpty()) {
+            context.getSender().sendMessage("§cНе найдено зачарований!");
+            return false;
+        }
+
+        weightMap.entrySet().stream()
+            .sorted(Map.Entry.comparingByKey())
+            .forEach(entry -> {
+                int weight = entry.getKey();
+                int count = entry.getValue().size();
+                context.getSender().sendMessage("§eWeight " + weight + "§7: §f" + count + " зачарований");
+
+                // Показываем первые 3 зачарования для примера
+                List<String> enchantNames = entry.getValue().stream()
+                    .limit(3)
+                    .map(CustomEnchantment::getDisplayName)
+                    .collect(Collectors.toList());
+
+                context.getSender().sendMessage("§8Примеры: §7" + String.join("§8, §7", enchantNames));
+            });
+
+        return true;
+    }
+
+    private static void showAvailableWeights(@NotNull CommandSender sender) {
+        Set<CustomEnchantment> registered = EnchantRegistry.getRegistered();
+        Set<Integer> weights = registered.stream()
+            .map(enchant -> enchant.getDefinition().getWeight())
+            .collect(Collectors.toSet());
+
+        if (!weights.isEmpty()) {
+            sender.sendMessage("§7Доступные weight: " + weights.stream()
+                .sorted()
+                .map(String::valueOf)
+                .collect(Collectors.joining(", ")));
+        }
+    }
+
+    // Вспомогательные методы
+    @NotNull
+    private static ItemStack createEnchantedBook(@NotNull Enchantment enchantment, int level) {
+        ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
+        EnchantUtils.add(book, enchantment, level, true);
+        return book;
+    }
+
+    @NotNull
+    private static ItemStack createShulkerBoxWithLevels(@NotNull GameEnchantment enchant, int maxLevel) {
+        Material shulkerMaterial = Material.SHULKER_BOX;
+        ItemStack shulkerBox = new ItemStack(shulkerMaterial);
+
+        BlockStateMeta meta = (BlockStateMeta) shulkerBox.getItemMeta();
+        if (meta == null) return shulkerBox;
+
+        ShulkerBox shulker = (ShulkerBox) meta.getBlockState();
+
+        // Заполняем шалкербокс книгами всех уровней
+        for (int level = 1; level <= maxLevel; level++) {
+            ItemStack book = createEnchantedBook(enchant.getBukkitEnchantment(), level);
+            shulker.getInventory().setItem(level - 1, book);
+        }
+
+        // Устанавливаем название шалкербокса
+        String displayName = enchant.getDisplayName();
+        meta.setDisplayName("§6" + displayName + " §7(Уровни 1-" + maxLevel + ")");
+
+        // Устанавливаем лор
+        List<String> lore = Lists.newList(
+            "§7Содержит все уровни зачарования",
+            "§7" + displayName,
+            "",
+            "§8Weight: " + enchant.getDefinition().getWeight()
+        );
+        meta.setLore(lore);
+
+        meta.setBlockState(shulker);
+        shulkerBox.setItemMeta(meta);
+
+        return shulkerBox;
     }
 }

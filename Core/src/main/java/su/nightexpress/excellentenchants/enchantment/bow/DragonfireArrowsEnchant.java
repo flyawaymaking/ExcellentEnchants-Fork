@@ -24,6 +24,7 @@ import su.nightexpress.excellentenchants.api.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.api.Modifier;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
 import su.nightexpress.excellentenchants.api.enchantment.meta.ArrowEffects;
+import su.nightexpress.excellentenchants.api.enchantment.meta.Period;
 import su.nightexpress.excellentenchants.api.enchantment.meta.Probability;
 import su.nightexpress.excellentenchants.api.enchantment.type.ArrowEnchant;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
@@ -41,18 +42,19 @@ public class DragonfireArrowsEnchant extends GameEnchantment implements ArrowEnc
     public DragonfireArrowsEnchant(@NotNull EnchantsPlugin plugin, @NotNull File file, @NotNull EnchantData data) {
         super(plugin, file, data);
         this.addComponent(EnchantComponent.ARROW, ArrowEffects.basic(Particle.DRAGON_BREATH));
-        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(4, 3));
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(0, 7));
+        this.addComponent(EnchantComponent.PERIODIC, Period.ofSeconds(3));
     }
 
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.duration = Modifier.load(config, "Dragonfire.Duration",
-            Modifier.addictive(40).perLevel(20).capacity(60 * 20),
+            Modifier.addictive(60).perLevel(0).capacity(60 * 20),
             "Dragonfire cloud effect duration (in ticks). 20 ticks = 1 second."
         );
 
         this.radius = Modifier.load(config, "Dragonfire.Radius",
-            Modifier.addictive(0).perLevel(1).capacity(5),
+            Modifier.addictive(5).perLevel(0).capacity(5),
             "Dragonfire cloud effect radius."
         );
 

@@ -10,6 +10,7 @@ import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantData;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
+import su.nightexpress.excellentenchants.api.enchantment.meta.Period;
 import su.nightexpress.excellentenchants.api.enchantment.meta.Probability;
 import su.nightexpress.excellentenchants.api.enchantment.type.AttackEnchant;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
@@ -23,7 +24,8 @@ public class DoubleStrikeEnchant extends GameEnchantment implements AttackEnchan
 
     public DoubleStrikeEnchant(@NotNull EnchantsPlugin plugin, @NotNull File file, @NotNull EnchantData data) {
         super(plugin, file, data);
-        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(1, 2));
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(15, 5));
+        this.addComponent(EnchantComponent.PERIODIC, Period.ofSeconds(4));
     }
 
     @Override

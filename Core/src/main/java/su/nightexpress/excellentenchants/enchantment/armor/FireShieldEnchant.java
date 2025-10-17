@@ -14,6 +14,7 @@ import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.api.Modifier;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
+import su.nightexpress.excellentenchants.api.enchantment.meta.Period;
 import su.nightexpress.excellentenchants.api.enchantment.meta.Probability;
 import su.nightexpress.excellentenchants.api.enchantment.type.DefendEnchant;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
@@ -32,13 +33,14 @@ public class FireShieldEnchant extends GameEnchantment implements DefendEnchant 
 
     public FireShieldEnchant(@NotNull EnchantsPlugin plugin, @NotNull File file, @NotNull EnchantData data) {
         super(plugin, file, data);
-        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(4, 2));
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(7, 14));
+        this.addComponent(EnchantComponent.PERIODIC, Period.ofSeconds(2));
     }
 
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.fireDuration = Modifier.load(config, "FireShield.Duration",
-            Modifier.addictive(4).perLevel(1).capacity(10),
+            Modifier.addictive(5).perLevel(0).capacity(10),
             "Sets the fire duration (in seconds)."
         );
 

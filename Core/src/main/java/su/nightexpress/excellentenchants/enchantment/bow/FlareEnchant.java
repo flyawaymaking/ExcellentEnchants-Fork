@@ -22,6 +22,7 @@ import su.nightexpress.excellentenchants.api.Modifier;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
 import su.nightexpress.excellentenchants.api.enchantment.meta.ArrowEffects;
 import su.nightexpress.excellentenchants.api.enchantment.meta.Charges;
+import su.nightexpress.excellentenchants.api.enchantment.meta.Period;
 import su.nightexpress.excellentenchants.api.enchantment.meta.Probability;
 import su.nightexpress.excellentenchants.api.enchantment.type.ArrowEnchant;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
@@ -37,6 +38,7 @@ public class FlareEnchant extends GameEnchantment implements ArrowEnchant {
         this.addComponent(EnchantComponent.ARROW, ArrowEffects.basic(Particle.ELECTRIC_SPARK));
         this.addComponent(EnchantComponent.PROBABILITY, Probability.oneHundred());
         this.addComponent(EnchantComponent.CHARGES, Charges.custom(Modifier.addictive(50), 1, 1, NightItem.fromType(Material.TORCH)));
+        this.addComponent(EnchantComponent.PERIODIC, Period.ofSeconds(3));
     }
 
     @Override

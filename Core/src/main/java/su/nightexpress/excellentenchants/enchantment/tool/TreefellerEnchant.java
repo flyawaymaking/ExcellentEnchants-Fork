@@ -12,6 +12,8 @@ import org.jetbrains.annotations.NotNull;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantData;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
+import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
+import su.nightexpress.excellentenchants.api.enchantment.meta.Probability;
 import su.nightexpress.excellentenchants.api.enchantment.type.MiningEnchant;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
 import su.nightexpress.excellentenchants.util.EnchantUtils;
@@ -42,6 +44,7 @@ public class TreefellerEnchant extends GameEnchantment implements MiningEnchant 
 
     public TreefellerEnchant(@NotNull EnchantsPlugin plugin, @NotNull File file, @NotNull EnchantData data) {
         super(plugin, file, data);
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(0, 20));
     }
 
     @Override
@@ -52,7 +55,7 @@ public class TreefellerEnchant extends GameEnchantment implements MiningEnchant 
         ).read(config);
 
         this.blockLimit = ConfigValue.create("Treefaller.Block_Limit",
-            180,
+            250,
             "Max. blocks to lookup for tree logs (including leaves)."
         ).read(config);
     }

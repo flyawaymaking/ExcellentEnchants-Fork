@@ -27,6 +27,7 @@ public class EnchantProviders {
         EnchantRegistry.addProvider(EnchantId.COLD_STEEL, (file, data) -> new ColdSteelEnchant(plugin, file, data));
         EnchantRegistry.addProvider(EnchantId.DARKNESS_CLOAK, (file, data) -> new DarknessCloakEnchant(plugin, file, data));
         EnchantRegistry.addProvider(EnchantId.ELEMENTAL_PROTECTION, (file, data) -> new ElementalProtectionEnchant(plugin, file, data));
+        EnchantRegistry.addProvider(EnchantId.FIRE_RESIST, (file, data) -> new FireResistEnchant(plugin, file, data));
         EnchantRegistry.addProvider(EnchantId.FIRE_SHIELD, (file, data) -> new FireShieldEnchant(plugin, file, data));
         EnchantRegistry.addProvider(EnchantId.FLAME_WALKER, (file, data) -> new FlameWalkerEnchant(plugin, file, data));
         EnchantRegistry.addProvider(EnchantId.HARDENED, (file, data) -> new HardenedEnchant(plugin, file, data));
@@ -57,16 +58,12 @@ public class EnchantProviders {
         EnchantRegistry.addProvider(EnchantId.VAMPIRIC_ARROWS, (file, data) -> new VampiricArrowsEnchant(plugin, file, data));
         EnchantRegistry.addProvider(EnchantId.WITHERED_ARROWS, (file, data) -> new WitheredArrowsEnchant(plugin, file, data));
 
-        EnchantRegistry.addProvider(EnchantId.CURSE_OF_DROWNED, (file, data) -> new CurseOfDrownedEnchant(plugin, file, data));
         EnchantRegistry.addProvider(EnchantId.DOUBLE_CATCH, (file, data) -> new DoubleCatchEnchant(plugin, file, data));
         EnchantRegistry.addProvider(EnchantId.RIVER_MASTER, (file, data) -> new RiverMasterEnchant(plugin, file, data));
         EnchantRegistry.addProvider(EnchantId.SEASONED_ANGLER, (file, data) -> new SeasonedAnglerEnchant(plugin, file, data));
         EnchantRegistry.addProvider(EnchantId.SURVIVALIST, (file, data) -> new SurvivalistEnchant(plugin, file, data));
 
         EnchantRegistry.addProvider(EnchantId.BLAST_MINING, (file, data) -> new BlastMiningEnchant(plugin, file, data));
-        EnchantRegistry.addProvider(EnchantId.CURSE_OF_BREAKING, (file, data) -> new CurseOfBreakingEnchant(plugin, file, data));
-        EnchantRegistry.addProvider(EnchantId.CURSE_OF_MEDIOCRITY, (file, data) -> new CurseOfMediocrityEnchant(plugin, file, data));
-        EnchantRegistry.addProvider(EnchantId.CURSE_OF_MISFORTUNE, (file, data) -> new CurseOfMisfortuneEnchant(plugin, file, data));
         EnchantRegistry.addProvider(EnchantId.GLASSBREAKER, (file, data) -> new GlassbreakerEnchant(plugin, file, data));
         EnchantRegistry.addProvider(EnchantId.HASTE, (file, data) -> new HasteEnchant(plugin, file, data));
         EnchantRegistry.addProvider(EnchantId.LUCKY_MINER, (file, data) -> new LuckyMinerEnchant(plugin, file, data));
@@ -78,7 +75,6 @@ public class EnchantProviders {
         EnchantRegistry.addProvider(EnchantId.TREEFELLER, (file, data) -> new TreefellerEnchant(plugin, file, data));
         EnchantRegistry.addProvider(EnchantId.VEINMINER, (file, data) -> new VeinminerEnchant(plugin, file, data));
 
-        EnchantRegistry.addProvider(EnchantId.CURSE_OF_FRAGILITY, (file, data) -> new CurseOfFragilityEnchant(plugin, file, data));
         EnchantRegistry.addProvider(EnchantId.RESTORE, (file, data) -> new RestoreEnchant(plugin, file, data));
         EnchantRegistry.addProvider(EnchantId.SOULBOUND, (file, data) -> new SoulboundEnchant(plugin, file, data));
 
@@ -86,11 +82,11 @@ public class EnchantProviders {
         EnchantRegistry.addProvider(EnchantId.BLINDNESS, (file, data) -> new BlindnessEnchant(plugin, file, data));
         EnchantRegistry.addProvider(EnchantId.CONFUSION, (file, data) -> new ConfusionEnchant(plugin, file, data));
         EnchantRegistry.addProvider(EnchantId.CURE, (file, data) -> new CureEnchant(plugin, file, data));
-        EnchantRegistry.addProvider(EnchantId.CURSE_OF_DEATH, (file, data) -> new CurseOfDeathEnchant(plugin, file, data));
         EnchantRegistry.addProvider(EnchantId.CUTTER, (file, data) -> new CutterEnchant(plugin, file, data));
         EnchantRegistry.addProvider(EnchantId.DECAPITATOR, (file, data) -> new DecapitatorEnchant(plugin, file, data));
         EnchantRegistry.addProvider(EnchantId.DOUBLE_STRIKE, (file, data) -> new DoubleStrikeEnchant(plugin, file, data));
         EnchantRegistry.addProvider(EnchantId.EXHAUST, (file, data) -> new ExhaustEnchant(plugin, file, data));
+        EnchantRegistry.addProvider(EnchantId.HOTBAR_SCRAMBLE, (file, data) -> new HotbarScrambleEnchant(plugin, file, data));
         EnchantRegistry.addProvider(EnchantId.ICE_ASPECT, (file, data) -> new IceAspectEnchant(plugin, file, data));
         EnchantRegistry.addProvider(EnchantId.INFERNUS, (file, data) -> new InfernusEnchant(plugin, file, data));
         EnchantRegistry.addProvider(EnchantId.NIMBLE, (file, data) -> new NimbleEnchant(plugin, file, data));

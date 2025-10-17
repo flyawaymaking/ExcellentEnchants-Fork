@@ -16,6 +16,8 @@ import su.nightexpress.excellentenchants.api.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.api.Modifier;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
 import su.nightexpress.excellentenchants.api.enchantment.meta.ArrowEffects;
+import su.nightexpress.excellentenchants.api.enchantment.meta.Period;
+import su.nightexpress.excellentenchants.api.enchantment.meta.Probability;
 import su.nightexpress.excellentenchants.api.enchantment.type.TridentEnchant;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
 import su.nightexpress.nightcore.config.FileConfig;
@@ -30,12 +32,14 @@ public class InfernusEnchant extends GameEnchantment implements TridentEnchant {
     public InfernusEnchant(@NotNull EnchantsPlugin plugin, @NotNull File file, @NotNull EnchantData data) {
         super(plugin, file, data);
         this.addComponent(EnchantComponent.ARROW, ArrowEffects.basic(Particle.FLAME));
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(4, 12));
+        this.addComponent(EnchantComponent.PERIODIC, Period.ofSeconds(2));
     }
 
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.fireTicks = Modifier.load(config, "Infernus.Fire_Ticks",
-            Modifier.addictive(60).perLevel(20).capacity(120),
+            Modifier.addictive(80).perLevel(0).capacity(120),
             "Sets for how long (in ticks) entity will be ignited on hit. 20 ticks = 1 second.");
 
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_TIME, level -> NumberUtil.format((double) this.getFireTicks(level) / 20D));

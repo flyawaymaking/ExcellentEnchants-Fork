@@ -56,7 +56,7 @@ public class FlameWalkerEnchant extends GameEnchantment implements MoveEnchant, 
         );
 
         this.decayTime = Modifier.load(config, "FlameWalker.Block_Decay",
-            Modifier.addictive(8).perLevel(1).capacity(15),
+            Modifier.addictive(8).perLevel(0).capacity(15),
             "Sets life time for magma blocks before turning back into lava."
         );
     }

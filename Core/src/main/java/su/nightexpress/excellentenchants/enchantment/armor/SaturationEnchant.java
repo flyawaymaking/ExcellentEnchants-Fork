@@ -10,6 +10,7 @@ import su.nightexpress.excellentenchants.api.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.api.Modifier;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
 import su.nightexpress.excellentenchants.api.enchantment.meta.Period;
+import su.nightexpress.excellentenchants.api.enchantment.meta.Probability;
 import su.nightexpress.excellentenchants.api.enchantment.type.PassiveEnchant;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
 import su.nightexpress.nightcore.config.FileConfig;
@@ -24,13 +25,14 @@ public class SaturationEnchant extends GameEnchantment implements PassiveEnchant
 
     public SaturationEnchant(@NotNull EnchantsPlugin plugin, @NotNull File file, @NotNull EnchantData data) {
         super(plugin, file, data);
-        this.addComponent(EnchantComponent.PERIODIC, Period.ofSeconds(15));
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(10, 20));
+        this.addComponent(EnchantComponent.PERIODIC, Period.ofSeconds(6));
     }
 
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.feedAmount = Modifier.load(config, "Saturation.Amount",
-            Modifier.addictive(0).perLevel(1).capacity(5),
+            Modifier.addictive(1).perLevel(0).capacity(1),
             "Amount of food points to restore.");
 
         this.maxFoodLevel = Modifier.load(config, "Saturation.Max_Food_Level",

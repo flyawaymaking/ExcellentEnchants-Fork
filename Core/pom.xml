@@ -35,12 +35,12 @@
 
         <repository>
             <id>lumine-repo</id>
-            <url>https://mvn.lumine.io/repository/maven-public/</url>
+            <url>https://repo1.maven.org/maven2/maven-public/</url>
         </repository>
 
         <repository>
             <id>lumine-snapshot</id>
-            <url>https://mvn.lumine.io/repository/maven-snapshots/</url>
+            <url>https://repo1.maven.org/maven2/maven-snapshots/</url>
         </repository>
 
         <repository>

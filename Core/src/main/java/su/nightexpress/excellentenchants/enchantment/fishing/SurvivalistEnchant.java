@@ -24,7 +24,7 @@ public class SurvivalistEnchant extends GameEnchantment implements FishingEnchan
 
     public SurvivalistEnchant(@NotNull EnchantsPlugin plugin, @NotNull File file, @NotNull EnchantData data) {
         super(plugin, file, data);
-        this.addComponent(EnchantComponent.PROBABILITY, Probability.oneHundred());
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(0, 50));
 
         this.cookingRecipes = new HashSet<>();
     }

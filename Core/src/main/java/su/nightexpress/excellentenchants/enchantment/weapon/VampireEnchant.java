@@ -13,6 +13,7 @@ import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.api.Modifier;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
+import su.nightexpress.excellentenchants.api.enchantment.meta.Period;
 import su.nightexpress.excellentenchants.api.enchantment.meta.Probability;
 import su.nightexpress.excellentenchants.api.enchantment.type.AttackEnchant;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
@@ -31,13 +32,14 @@ public class VampireEnchant extends GameEnchantment implements AttackEnchant {
 
     public VampireEnchant(@NotNull EnchantsPlugin plugin, @NotNull File file, @NotNull EnchantData data) {
         super(plugin, file, data);
-        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(8, 4));
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(2, 5));
+        this.addComponent(EnchantComponent.PERIODIC, Period.ofSeconds(2));
     }
 
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.healAmount = Modifier.load(config, "Vampire.Amount",
-            Modifier.addictive(0.25).perLevel(0.25).capacity(10),
+            Modifier.addictive(0.5).perLevel(0).capacity(10),
             "Amount of health to be restored for attacker.");
 
         this.healMultiplier = ConfigValue.create("Vampire.Multiplier",

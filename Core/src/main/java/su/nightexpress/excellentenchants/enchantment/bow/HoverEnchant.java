@@ -15,6 +15,7 @@ import su.nightexpress.excellentenchants.api.Modifier;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
 import su.nightexpress.excellentenchants.api.enchantment.meta.ArrowEffects;
 import su.nightexpress.excellentenchants.api.enchantment.meta.PotionEffects;
+import su.nightexpress.excellentenchants.api.enchantment.meta.Period;
 import su.nightexpress.excellentenchants.api.enchantment.meta.Probability;
 import su.nightexpress.excellentenchants.api.enchantment.type.BowEnchant;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
@@ -27,8 +28,9 @@ public class HoverEnchant extends GameEnchantment implements BowEnchant {
     public HoverEnchant(@NotNull EnchantsPlugin plugin, @NotNull File file, @NotNull EnchantData data) {
         super(plugin, file, data);
         this.addComponent(EnchantComponent.ARROW, ArrowEffects.basic(Particle.BUBBLE_POP));
-        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(4, 3));
-        this.addComponent(EnchantComponent.POTION_EFFECT, PotionEffects.temporal(PotionEffectType.LEVITATION, Modifier.addictive(4).perLevel(1).capacity(10)));
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(0, 8));
+        this.addComponent(EnchantComponent.POTION_EFFECT, PotionEffects.temporal(PotionEffectType.LEVITATION, Modifier.addictive(5).perLevel(0).capacity(10)));
+        this.addComponent(EnchantComponent.PERIODIC, Period.ofSeconds(3));
     }
 
     @Override

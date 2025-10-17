@@ -14,6 +14,7 @@ import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.Modifier;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
 import su.nightexpress.excellentenchants.api.enchantment.meta.PotionEffects;
+import su.nightexpress.excellentenchants.api.enchantment.meta.Period;
 import su.nightexpress.excellentenchants.api.enchantment.meta.Probability;
 import su.nightexpress.excellentenchants.api.enchantment.type.DefendEnchant;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
@@ -27,8 +28,9 @@ public class IceShieldEnchant extends GameEnchantment implements DefendEnchant {
 
     public IceShieldEnchant(@NotNull EnchantsPlugin plugin, @NotNull File file, @NotNull EnchantData data) {
         super(plugin, file, data);
-        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(5, 5));
-        this.addComponent(EnchantComponent.POTION_EFFECT, PotionEffects.temporal(PotionEffectType.SLOWNESS, Modifier.addictive(3).perLevel(1).capacity(10)));
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(10, 3));
+        this.addComponent(EnchantComponent.POTION_EFFECT, PotionEffects.temporal(PotionEffectType.SLOWNESS, Modifier.addictive(3).perLevel(0).capacity(10)));
+        this.addComponent(EnchantComponent.PERIODIC, Period.ofSeconds(3));
     }
 
     @Override

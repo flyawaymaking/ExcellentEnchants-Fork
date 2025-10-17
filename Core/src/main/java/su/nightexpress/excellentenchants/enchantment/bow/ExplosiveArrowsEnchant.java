@@ -18,6 +18,7 @@ import su.nightexpress.excellentenchants.api.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.api.Modifier;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
 import su.nightexpress.excellentenchants.api.enchantment.meta.ArrowEffects;
+import su.nightexpress.excellentenchants.api.enchantment.meta.Period;
 import su.nightexpress.excellentenchants.api.enchantment.meta.Probability;
 import su.nightexpress.excellentenchants.api.enchantment.type.ArrowEnchant;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
@@ -37,7 +38,8 @@ public class ExplosiveArrowsEnchant extends GameEnchantment implements ArrowEnch
     public ExplosiveArrowsEnchant(@NotNull EnchantsPlugin plugin, @NotNull File file, @NotNull EnchantData data) {
         super(plugin, file, data);
         this.addComponent(EnchantComponent.ARROW, ArrowEffects.basic(Particle.SMOKE));
-        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(3, 2));
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(10, 10));
+        this.addComponent(EnchantComponent.PERIODIC, Period.ofSeconds(5));
     }
 
     @Override
@@ -55,7 +57,7 @@ public class ExplosiveArrowsEnchant extends GameEnchantment implements ArrowEnch
             "Controls whether explosion can break blocks.").read(config);
 
         this.power = Modifier.load(config, "Explosion.Power",
-            Modifier.addictive(1).perLevel(1).capacity(5),
+            Modifier.addictive(2).perLevel(0).capacity(5),
             "Explosion power.");
 
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_RADIUS, level -> NumberUtil.format(this.getPower(level)));

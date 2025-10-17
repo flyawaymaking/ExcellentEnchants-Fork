@@ -19,7 +19,7 @@ public class DoubleCatchEnchant extends GameEnchantment implements FishingEnchan
 
     public DoubleCatchEnchant(@NotNull EnchantsPlugin plugin, @NotNull File file, @NotNull EnchantData data) {
         super(plugin, file, data);
-        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(4, 2));
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(0, 15));
     }
 
     @Override

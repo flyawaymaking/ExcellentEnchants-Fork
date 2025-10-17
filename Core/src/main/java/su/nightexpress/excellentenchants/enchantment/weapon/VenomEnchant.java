@@ -12,6 +12,7 @@ import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.Modifier;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
 import su.nightexpress.excellentenchants.api.enchantment.meta.PotionEffects;
+import su.nightexpress.excellentenchants.api.enchantment.meta.Period;
 import su.nightexpress.excellentenchants.api.enchantment.meta.Probability;
 import su.nightexpress.excellentenchants.api.enchantment.type.AttackEnchant;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
@@ -24,8 +25,9 @@ public class VenomEnchant extends GameEnchantment implements AttackEnchant {
 
     public VenomEnchant(@NotNull EnchantsPlugin plugin, @NotNull File file, @NotNull EnchantData data) {
         super(plugin, file, data);
-        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(5, 5));
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(0, 8));
         this.addComponent(EnchantComponent.POTION_EFFECT, PotionEffects.temporal(PotionEffectType.POISON, Modifier.addictive(2).perLevel(1).capacity(10)));
+        this.addComponent(EnchantComponent.PERIODIC, Period.ofSeconds(3));
     }
 
     @Override

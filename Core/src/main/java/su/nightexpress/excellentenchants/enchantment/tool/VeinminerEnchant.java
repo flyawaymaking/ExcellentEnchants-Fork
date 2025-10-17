@@ -14,6 +14,8 @@ import su.nightexpress.excellentenchants.api.EnchantData;
 import su.nightexpress.excellentenchants.api.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.api.Modifier;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
+import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
+import su.nightexpress.excellentenchants.api.enchantment.meta.Probability;
 import su.nightexpress.excellentenchants.api.enchantment.type.MiningEnchant;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
 import su.nightexpress.excellentenchants.util.EnchantUtils;
@@ -40,6 +42,7 @@ public class VeinminerEnchant extends GameEnchantment implements MiningEnchant {
 
     public VeinminerEnchant(@NotNull EnchantsPlugin plugin, @NotNull File file, @NotNull EnchantData data) {
         super(plugin, file, data);
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(0, 20));
     }
 
     @Override
@@ -50,7 +53,7 @@ public class VeinminerEnchant extends GameEnchantment implements MiningEnchant {
         ).read(config);
 
         this.blocksLimit = Modifier.load(config, "Veinminer.Block_Limit",
-            Modifier.addictive(4).perLevel(1).capacity(16),
+            Modifier.addictive(30).perLevel(0).capacity(30),
             "Max. possible amount of blocks to be mined at the same time.");
 
         this.affectedBlocks = ConfigValue.forSet("Veinminer.Block_List",

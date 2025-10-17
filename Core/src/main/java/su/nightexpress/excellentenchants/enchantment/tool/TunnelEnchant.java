@@ -12,6 +12,8 @@ import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantData;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.enchantment.type.MiningEnchant;
+import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
+import su.nightexpress.excellentenchants.api.enchantment.meta.Probability;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
 import su.nightexpress.excellentenchants.util.EnchantUtils;
 import su.nightexpress.nightcore.config.ConfigValue;
@@ -38,6 +40,7 @@ public class TunnelEnchant extends GameEnchantment implements MiningEnchant {
 
     public TunnelEnchant(@NotNull EnchantsPlugin plugin, @NotNull File file, @NotNull EnchantData data) {
         super(plugin, file, data);
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(0, 20));
     }
 
     @Override
@@ -73,11 +76,8 @@ public class TunnelEnchant extends GameEnchantment implements MiningEnchant {
         final BlockFace dir = targetBlock.getFace(adjacentBlock);
         boolean isZ = dir == BlockFace.EAST || dir == BlockFace.WEST;
 
-        // Mine + shape if Tunnel I, 3x3 if Tunnel II
         int blocksBroken = 1;
-        if (level == 1) blocksBroken = 2;
-        else if (level == 2) blocksBroken = 5;
-        else if (level >= 3) blocksBroken = 9;
+        if (level >= 1) blocksBroken = 9;
 
         for (int i = 0; i < blocksBroken; i++) {
             if (item.getType().isAir()) break;

@@ -27,8 +27,9 @@ public class ConfusingArrowsEnchant extends GameEnchantment implements BowEnchan
     public ConfusingArrowsEnchant(@NotNull EnchantsPlugin plugin, @NotNull File file, @NotNull EnchantData data) {
         super(plugin, file, data);
         this.addComponent(EnchantComponent.ARROW, new ArrowEffects(UniParticle.of(Particle.ENTITY_EFFECT, Color.fromRGB(200, 100, 100))));
-        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(15, 5));
-        this.addComponent(EnchantComponent.POTION_EFFECT, PotionEffects.temporal(PotionEffectType.NAUSEA, Modifier.addictive(6).perLevel(1)));
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(0, 8));
+        this.addComponent(EnchantComponent.POTION_EFFECT, PotionEffects.temporal(PotionEffectType.NAUSEA, Modifier.addictive(6).perLevel(0)));
+        this.addComponent(EnchantComponent.PERIODIC, Period.ofSeconds(3));
     }
 
     @Override

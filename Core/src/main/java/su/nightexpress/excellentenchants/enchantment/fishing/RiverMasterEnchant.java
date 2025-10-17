@@ -25,7 +25,7 @@ public class RiverMasterEnchant extends GameEnchantment implements FishingEnchan
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.distanceMod = Modifier.load(config, "RiverMaster.Distance_Modifier",
-            Modifier.addictive(1).perLevel(0.25).capacity(3D),
+            Modifier.addictive(1).perLevel(0.5).capacity(3D),
             "Multiplies the casted fish hook's velocity by specified value.",
             "This does not bypasses the hook distance limits."
         );

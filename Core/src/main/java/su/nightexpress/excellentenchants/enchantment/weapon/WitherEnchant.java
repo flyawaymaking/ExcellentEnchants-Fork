@@ -12,6 +12,7 @@ import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.Modifier;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
 import su.nightexpress.excellentenchants.api.enchantment.meta.PotionEffects;
+import su.nightexpress.excellentenchants.api.enchantment.meta.Period;
 import su.nightexpress.excellentenchants.api.enchantment.meta.Probability;
 import su.nightexpress.excellentenchants.api.enchantment.type.AttackEnchant;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
@@ -24,8 +25,9 @@ public class WitherEnchant extends GameEnchantment implements AttackEnchant {
 
     public WitherEnchant(@NotNull EnchantsPlugin plugin, @NotNull File file, @NotNull EnchantData data) {
         super(plugin, file, data);
-        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(4, 3));
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(6, 3));
         this.addComponent(EnchantComponent.POTION_EFFECT, PotionEffects.temporal(PotionEffectType.WITHER, Modifier.addictive(4).perLevel(2).capacity(10)));
+        this.addComponent(EnchantComponent.PERIODIC, Period.ofSeconds(3));
     }
 
     @Override

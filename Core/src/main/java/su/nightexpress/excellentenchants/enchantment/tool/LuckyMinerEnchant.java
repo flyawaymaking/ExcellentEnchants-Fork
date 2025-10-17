@@ -10,6 +10,7 @@ import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.api.Modifier;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
+import su.nightexpress.excellentenchants.api.enchantment.meta.Period;
 import su.nightexpress.excellentenchants.api.enchantment.meta.Probability;
 import su.nightexpress.excellentenchants.api.enchantment.type.MiningEnchant;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
@@ -24,7 +25,8 @@ public class LuckyMinerEnchant extends GameEnchantment implements MiningEnchant 
 
     public LuckyMinerEnchant(@NotNull EnchantsPlugin plugin, @NotNull File file, @NotNull EnchantData data) {
         super(plugin, file, data);
-        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(20, 10));
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(10, 11));
+        this.addComponent(EnchantComponent.PERIODIC, Period.ofSeconds(3));
     }
 
     @Override

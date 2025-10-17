@@ -3,16 +3,18 @@ package su.nightexpress.excellentenchants.enchantment.armor;
 import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantData;
+import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.api.Modifier;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
 import su.nightexpress.excellentenchants.api.enchantment.meta.Period;
 import su.nightexpress.excellentenchants.api.enchantment.meta.Probability;
-import su.nightexpress.excellentenchants.api.enchantment.type.PassiveEnchant;
+import su.nightexpress.excellentenchants.api.enchantment.type.DefendEnchant;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.util.EntityUtil;
@@ -21,7 +23,7 @@ import su.nightexpress.nightcore.util.wrapper.UniParticle;
 
 import java.io.File;
 
-public class RegrowthEnchant extends GameEnchantment implements PassiveEnchant {
+public class RegrowthEnchant extends GameEnchantment implements DefendEnchant {
 
     private Modifier minHealth;
     private Modifier maxHealth;
@@ -29,8 +31,8 @@ public class RegrowthEnchant extends GameEnchantment implements PassiveEnchant {
 
     public RegrowthEnchant(@NotNull EnchantsPlugin plugin, @NotNull File file, @NotNull EnchantData data) {
         super(plugin, file, data);
-        this.addComponent(EnchantComponent.PROBABILITY, Probability.oneHundred());
-        this.addComponent(EnchantComponent.PERIODIC, Period.ofSeconds(15));
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(4, 6));
+        this.addComponent(EnchantComponent.PERIODIC, Period.ofSeconds(6));
     }
 
     @Override
@@ -46,13 +48,19 @@ public class RegrowthEnchant extends GameEnchantment implements PassiveEnchant {
         );
 
         this.healAmount = Modifier.load(config, "Regrowth.Heal_Amount",
-            Modifier.addictive(0.1).perLevel(0.1).capacity(1D),
+            Modifier.addictive(0.5).perLevel(0).capacity(1D),
             "Amount of hearts to be restored."
         );
 
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.getHealAmount(level)));
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_MIN, level -> NumberUtil.format(this.getMinHealthToHeal(level)));
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_MAX, level -> NumberUtil.format(this.getMaxHealthToHeal(level)));
+    }
+
+    @NotNull
+    @Override
+    public EnchantPriority getProtectPriority() {
+        return EnchantPriority.NORMAL;
     }
 
     public double getHealAmount(int level) {
@@ -68,17 +76,17 @@ public class RegrowthEnchant extends GameEnchantment implements PassiveEnchant {
     }
 
     @Override
-    public boolean onTrigger(@NotNull LivingEntity entity, @NotNull ItemStack item, int level) {
-        double maxHealth = EntityUtil.getAttribute(entity, Attribute.MAX_HEALTH);
-        double health = entity.getHealth();
+    public boolean onProtect(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity damager, @NotNull LivingEntity victim, @NotNull ItemStack weapon, int level) {
+        double maxHealth = EntityUtil.getAttribute(victim, Attribute.MAX_HEALTH);
+        double health = victim.getHealth();
         if (health < this.getMinHealthToHeal(level) || health > this.getMaxHealthToHeal(level)) return false;
         if (health >= maxHealth) return false;
 
         double amount = Math.min(maxHealth, health + this.getHealAmount(level));
-        entity.setHealth(amount);
+        victim.setHealth(amount);
 
         if (this.hasVisualEffects()) {
-            UniParticle.of(Particle.HEART).play(entity.getEyeLocation(), 0.25, 0.1, 5);
+            UniParticle.of(Particle.HEART).play(victim.getEyeLocation(), 0.25, 0.1, 5);
         }
         return true;
     }

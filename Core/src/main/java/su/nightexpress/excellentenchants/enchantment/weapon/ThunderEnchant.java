@@ -14,6 +14,7 @@ import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.api.Modifier;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
+import su.nightexpress.excellentenchants.api.enchantment.meta.Period;
 import su.nightexpress.excellentenchants.api.enchantment.meta.Probability;
 import su.nightexpress.excellentenchants.api.enchantment.type.AttackEnchant;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
@@ -32,7 +33,8 @@ public class ThunderEnchant extends GameEnchantment implements AttackEnchant {
 
     public ThunderEnchant(@NotNull EnchantsPlugin plugin, File file, @NotNull EnchantData data) {
         super(plugin, file, data);
-        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(5, 2));
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(15, 10));
+        this.addComponent(EnchantComponent.PERIODIC, Period.ofSeconds(3));
     }
 
     @Override
@@ -43,7 +45,7 @@ public class ThunderEnchant extends GameEnchantment implements AttackEnchant {
         ).read(config);
 
         this.damageModifier = Modifier.load(config, "Thunder.Damage_Modifier",
-            Modifier.addictive(1.25).perLevel(0.25).capacity(1000D),
+            Modifier.addictive(1.5).perLevel(0).capacity(1000D),
             "Sets additional damage caused by enchantment's effect."
         );
 
