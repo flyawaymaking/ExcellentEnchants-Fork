@@ -32,6 +32,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class BaseCommands {
+    private static final int COMMON    = 10;
+    private static final int UNCOMMON  = 5;
+    private static final int RARE      = 2;
+    private static final int VERY_RARE = 1;
 
     private final EnchantsPlugin plugin;
 
@@ -120,7 +124,8 @@ public class BaseCommands {
             .description("Получить случайную книгу зачарования по weight")
             .permission(Perms.COMMAND_BOOK)
             .withArguments(
-                    Arguments.integer("weight", 1).suggestions((rader, context) -> Lists.newList("1", "2", "5", "10")),
+                    Arguments.integer("weight", 1).suggestions((rader, context) -> Lists.newList(
+                            String.valueOf(VERY_RARE), String.valueOf(RARE), String.valueOf(UNCOMMON), String.valueOf(COMMON))),
                     Arguments.player(CommandArguments.PLAYER).optional()
             )
             .executes(this::giveRandomEnchantByWeight)
@@ -129,7 +134,8 @@ public class BaseCommands {
         builder.branch(Commands.literal("allenchants")
             .description("Получить все книги зачарований по weight")
             .permission(Perms.COMMAND_BOOK)
-            .withArguments(Arguments.integer("weight", 1).suggestions((rader, context) -> Lists.newList("1", "2", "5", "10")))
+            .withArguments(Arguments.integer("weight", 1).suggestions((rader, context) -> Lists.newList(
+                    String.valueOf(VERY_RARE), String.valueOf(RARE), String.valueOf(UNCOMMON), String.valueOf(COMMON))))
             .executes(this::giveAllEnchantsByWeight)
         );
 
@@ -305,10 +311,10 @@ public class BaseCommands {
 
     private String getWeightName(int weight) {
         return switch (weight) {
-            case 1 -> "§6§lЛегендарный чар";
-            case 2 -> "§d§lЭпический чар";
-            case 5 -> "§b§lЭлитный чар";
-            case 10 -> "§a§lУникальный чар";
+            case VERY_RARE -> "§6§lЛегендарный чар";
+            case RARE -> "§d§lЭпический чар";
+            case UNCOMMON -> "§b§lЭлитный чар";
+            case COMMON -> "§a§lУникальный чар";
             default -> "Weight: " + weight;
         };
     }

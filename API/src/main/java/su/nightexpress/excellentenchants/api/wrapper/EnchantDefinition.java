@@ -205,6 +205,10 @@ public class EnchantDefinition implements Writeable {
     }
 
     public static class Builder {
+        private static final int COMMON    = 10;
+        private static final int UNCOMMON  = 5;
+        private static final int RARE      = 2;
+        private static final int VERY_RARE = 1;
 
         private String       displayName;
         private List<String> description;
@@ -240,7 +244,7 @@ public class EnchantDefinition implements Writeable {
         @NotNull
         public EnchantDefinition build() {
             return new EnchantDefinition(
-                this.displayName,
+                getDisplayName(),
                 this.description,
                 this.weight,
                 this.maxLevel,
@@ -251,6 +255,16 @@ public class EnchantDefinition implements Writeable {
                 this.primaryItemsId,
                 this.exclusives
             );
+        }
+
+        private String getDisplayName() {
+            return switch (weight) {
+                case VERY_RARE -> "§6" + this.displayName;
+                case RARE -> "§d" + this.displayName;
+                case UNCOMMON -> "§b" + this.displayName;
+                case COMMON -> "§a" + this.displayName;
+                default -> this.displayName;
+            };
         }
 
         @NotNull
