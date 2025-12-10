@@ -9,17 +9,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.block.ShulkerBox;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable; // Добавьте этот импорт
 import su.nightexpress.excellentenchants.EnchantsPlugin;
-import su.nightexpress.excellentenchants.api.EnchantRegistry;
-import su.nightexpress.excellentenchants.api.EnchantData;
+import su.nightexpress.excellentenchants.enchantment.EnchantRegistry;
 import su.nightexpress.excellentenchants.api.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.api.enchantment.CustomEnchantment;
-import su.nightexpress.excellentenchants.api.wrapper.EnchantDefinition;
 import su.nightexpress.excellentenchants.config.Config;
 import su.nightexpress.excellentenchants.config.Lang;
 import su.nightexpress.excellentenchants.config.Perms;
-import su.nightexpress.excellentenchants.enchantment.EnchantRegistry;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
 import su.nightexpress.excellentenchants.util.EnchantUtils;
 import su.nightexpress.nightcore.commands.Arguments;
@@ -120,25 +116,27 @@ public class BaseCommands {
             );
         }
 
-        rootNode.addChildren(DirectNode.builder(plugin, "randomenchant")
+        builder.branch(Commands.literal("randomenchant")
             .description("Получить случайную книгу зачарования по weight")
-            .permission(Perms.COMMAND_BOOK) // Используем существующее разрешение или создаем новое
-            .withArgument(ArgumentTypes.integerAbs("weight").required())
-            .withArgument(ArgumentTypes.player(CommandArguments.PLAYER))
-            .executes((context, arguments) -> giveRandomEnchantByWeight(plugin, context, arguments))
+            .permission(Perms.COMMAND_BOOK)
+            .withArguments(
+                    Arguments.integer("weight", 1).suggestions((rader, context) -> Lists.newList("1", "2", "5", "10")),
+                    Arguments.player(CommandArguments.PLAYER).optional()
+            )
+            .executes(this::giveRandomEnchantByWeight)
         );
 
-        rootNode.addChildren(DirectNode.builder(plugin, "allenchants")
+        builder.branch(Commands.literal("allenchants")
             .description("Получить все книги зачарований по weight")
             .permission(Perms.COMMAND_BOOK)
-            .withArgument(ArgumentTypes.integerAbs("weight").required())
-            .executes((context, arguments) -> giveAllEnchantsByWeight(plugin, context, arguments))
+            .withArguments(Arguments.integer("weight", 1).suggestions((rader, context) -> Lists.newList("1", "2", "5", "10")))
+            .executes(this::giveAllEnchantsByWeight)
         );
 
-        rootNode.addChildren(DirectNode.builder(plugin, "weightlist")
+        builder.branch(Commands.literal("weightlist")
             .description("Показать список доступных weight")
             .permission(Perms.COMMAND_LIST)
-            .executes((context, arguments) -> showWeightList(plugin, context, arguments))
+            .executes(this::showWeightList)
         );
     }
 
@@ -305,26 +303,20 @@ public class BaseCommands {
         return true;
     }
 
-    public static String getWeightName(int weight) {
-        switch (weight) {
-            case 1:
-                return "§6§lЛегендарный чар";
-            case 2:
-                return "§d§lЭпический чар";
-            case 5:
-                return "§b§lЭлитный чар";
-            case 10:
-                return "§a§lУникальный чар";
-            default:
-                return "Weight: " + weight;
-        }
+    private String getWeightName(int weight) {
+        return switch (weight) {
+            case 1 -> "§6§lЛегендарный чар";
+            case 2 -> "§d§lЭпический чар";
+            case 5 -> "§b§lЭлитный чар";
+            case 10 -> "§a§lУникальный чар";
+            default -> "Weight: " + weight;
+        };
     }
 
-    public static boolean giveRandomEnchantByWeight(@NotNull EnchantsPlugin plugin, @NotNull CommandContext context, @NotNull ParsedArguments arguments) {
-        Player player = CommandUtil.getPlayerOrSender(context, arguments, CommandArguments.PLAYER);
-        if (player == null) return false;
+    private boolean giveRandomEnchantByWeight(@NotNull CommandContext context, @NotNull ParsedArguments arguments) {
+        Player player = arguments.contains(CommandArguments.PLAYER) ? arguments.getPlayer(CommandArguments.PLAYER) : context.getPlayerOrThrow();
 
-        int targetWeight = arguments.getIntArgument("weight", -1);
+        int targetWeight = arguments.getInt("weight", -1);
 
         if (targetWeight <= 0) {
             context.getSender().sendMessage("§cWeight должен быть положительным числом!");
@@ -355,7 +347,7 @@ public class BaseCommands {
         // Красивое сообщение как в других командах плагина
         if (context.getSender() == player) {
             // Сообщение для себя
-            Lang.ENCHANTED_BOOK_GAVE.getMessage().send(context.getSender(), replacer -> replacer
+            Lang.ENCHANTED_BOOK_GAVE.message().send(context.getSender(), replacer -> replacer
                 .replace(EnchantsPlaceholders.GENERIC_ENCHANT, enchant.getDisplayName())
                 .replace(EnchantsPlaceholders.GENERIC_LEVEL, NumberUtil.toRoman(randomLevel))
                 .replace(EnchantsPlaceholders.forPlayer(player))
@@ -376,11 +368,10 @@ public class BaseCommands {
         return true;
     }
 
-    public static boolean giveAllEnchantsByWeight(@NotNull EnchantsPlugin plugin, @NotNull CommandContext context, @NotNull ParsedArguments arguments) {
-        Player player = CommandUtil.getPlayerOrSender(context, arguments, CommandArguments.PLAYER);
-        if (player == null) return false;
+    private boolean giveAllEnchantsByWeight(@NotNull CommandContext context, @NotNull ParsedArguments arguments) {
+        Player player = arguments.contains(CommandArguments.PLAYER) ? arguments.getPlayer(CommandArguments.PLAYER) : context.getPlayerOrThrow();
 
-        int targetWeight = arguments.getIntArgument("weight", -1);
+        int targetWeight = arguments.getInt("weight", -1);
 
         if (targetWeight <= 0) {
             context.getSender().sendMessage("§cWeight должен быть положительным числом!");
@@ -390,7 +381,7 @@ public class BaseCommands {
         // Получаем все CustomEnchantment и фильтруем по weight из definition
         List<CustomEnchantment> enchantments = EnchantRegistry.getRegistered().stream()
             .filter(enchant -> enchant.getDefinition().getWeight() == targetWeight)
-            .collect(Collectors.toList());
+            .toList();
 
         if (enchantments.isEmpty()) {
             context.getSender().sendMessage("§cНе найдено зачарований с weight: " + targetWeight);
@@ -422,10 +413,7 @@ public class BaseCommands {
         return true;
     }
 
-    public static boolean showWeightList(@NotNull EnchantsPlugin plugin, @NotNull CommandContext context, @NotNull ParsedArguments arguments) {
-        Player player = CommandUtil.getPlayerOrSender(context, arguments, CommandArguments.PLAYER);
-        if (player == null) return false;
-
+    private boolean showWeightList(@NotNull CommandContext context, @NotNull ParsedArguments arguments) {
         // Получаем все зарегистрированные зачарования
         Set<CustomEnchantment> registered = EnchantRegistry.getRegistered();
 
@@ -464,7 +452,7 @@ public class BaseCommands {
         return true;
     }
 
-    private static void showAvailableWeights(@NotNull CommandSender sender) {
+    private void showAvailableWeights(@NotNull CommandSender sender) {
         Set<CustomEnchantment> registered = EnchantRegistry.getRegistered();
         Set<Integer> weights = registered.stream()
             .map(enchant -> enchant.getDefinition().getWeight())

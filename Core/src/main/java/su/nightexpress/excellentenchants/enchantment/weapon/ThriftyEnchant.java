@@ -36,7 +36,7 @@ public class ThriftyEnchant extends GameEnchantment implements KillEnchant {
 
     public ThriftyEnchant(@NotNull EnchantsPlugin plugin, @NotNull File file, @NotNull EnchantData data) {
         super(plugin, file, data);
-        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(0, 0.5));
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(0, 0.08));
     }
 
     @Override
