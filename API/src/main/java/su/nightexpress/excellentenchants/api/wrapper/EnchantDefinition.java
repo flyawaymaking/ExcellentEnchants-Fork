@@ -259,11 +259,11 @@ public class EnchantDefinition implements Writeable {
 
         private String getDisplayName() {
             return switch (weight) {
-                case VERY_RARE -> "§6" + this.displayName;
-                case RARE -> "§d" + this.displayName;
-                case UNCOMMON -> "§b" + this.displayName;
-                case COMMON -> "§a" + this.displayName;
-                default -> this.displayName;
+                case VERY_RARE -> "<gold>" + this.displayName;
+                case RARE      -> "<light_purple>" + this.displayName;
+                case UNCOMMON  -> "<aqua>" + this.displayName;
+                case COMMON    -> "<green>" + this.displayName;
+                default        -> this.displayName;
             };
         }
 
