@@ -36,7 +36,7 @@ public class BomberEnchant extends GameEnchantment implements BowEnchant {
     @Override
     protected void loadAdditional(@NotNull FileConfig config) {
         this.fuseTicks = Modifier.load(config, "Bomber.Fuse_Ticks",
-            Modifier.addictive(40).perLevel(10).capacity(200),
+            Modifier.addictive(40).perLevel(-5).capacity(200),
             "Sets TNT fuse ticks.");
 
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_TIME, level -> NumberUtil.format((double) this.getFuseTicks(level) / 20D));
